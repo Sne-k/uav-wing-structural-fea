@@ -1,0 +1,7 @@
+cycle,stress_component,mean_MPa,amplitude_MPa,goodman_equivalent_MPa,life_cycles
+0 -> limit (4 g) manoeuvre cycles,lower-skin spanwise tension,12.16,12.16,12.66,> 1e7 (below the lowest S-N point)
+0 -> limit (4 g) manoeuvre cycles,von Mises (project method),13.47,13.47,14.09,> 1e7 (below the lowest S-N point)
+1 g +/- 0.5 g gust cycles,lower-skin spanwise tension,6.08,3.04,3.10,> 1e7 (below the lowest S-N point)
+1 g +/- 0.5 g gust cycles,von Mises (project method),6.74,3.37,3.44,> 1e7 (below the lowest S-N point)
+1 g +/- 1.0 g gust cycles,lower-skin spanwise tension,6.08,6.08,6.20,> 1e7 (below the lowest S-N point)
+1 g +/- 1.0 g gust cycles,von Mises (project method),6.74,6.74,6.89,> 1e7 (below the lowest S-N point)

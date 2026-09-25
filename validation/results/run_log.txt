@@ -1,0 +1,53 @@
+
+=== PART A: original geometry and load, root clamped ===
+mesh x0.5: dof 3498, tip w 2.746 mm, max vM 9.43 MPa (y>0.05 m: 7.95), f1 22.31 Hz, in-plane 141.2 Hz, torsion 212.6 Hz, mass 12.810 kg, reaction 439.7 N
+mesh x1.0: dof 16524, tip w 2.707 mm, max vM 9.98 MPa (y>0.05 m: 8.16), f1 22.47 Hz, in-plane 141.3 Hz, torsion 213.8 Hz, mass 12.838 kg, reaction 440.6 N
+mesh x1.5: dof 39318, tip w 2.700 mm, max vM 10.38 MPa (y>0.05 m: 8.34), f1 22.49 Hz, in-plane 141.4 Hz, torsion 213.9 Hz, mass 12.844 kg, reaction 440.8 N
+mesh x2.0: dof 70350, tip w 2.698 mm, max vM 10.67 MPa (y>0.05 m: 8.33), f1 22.50 Hz, in-plane 141.4 Hz, torsion 214.0 Hz, mass 12.846 kg, reaction 440.9 N
+  mode 1: 22.50 Hz  flapwise bending #1
+  mode 2: 123.42 Hz  flapwise bending #2
+  mode 3: 141.37 Hz  in-plane (chordwise) bending #1
+  mode 4: 213.96 Hz  torsion #1
+  mode 5: 317.46 Hz  flapwise bending #3
+  mode 6: 567.79 Hz  torsion #2
+  mode 7: 574.89 Hz  flapwise bending #4
+  mode 8: 700.65 Hz  in-plane (chordwise) bending #2
+project 'CFRP': tip w 2.704 mm, max vM 10.59 MPa, f1 29.20 Hz (ratio 1.298), mass 7.613 kg
+
+=== PART B: design load case ===
+  mtow_kg: 5.0
+  n_limit: 4.0
+  safety_factor: 1.5
+  cl_max: 1.2
+  note: Inertia relief from the wing's own mass is ignored (conservative).
+  n_ult: 6.0
+  semi_span_lift_limit_N: 98.1
+  semi_span_lift_ult_N: 147.15
+  stall_speed_ms: 11.117
+  manoeuvre_speed_ms: 22.234
+  lifting line: AR 10.67, span efficiency e = 0.942, CL_alpha = 5.156 /rad
+  original 8 mm design at ULTIMATE design load (147.2 N/semi-span, applied 147.2 N): tip w 0.814 mm, max vM 3.36 MPa, reserve factor on yield 82, semi-span mass 12.84 kg (514 % of the 5 kg MTOW for both wings)
+
+=== PART C: aluminium skin sizing (webs 1.5 mm, ribs 1.0 mm) ===
+  skin 0.4 mm: mass 0.926 kg, tip w @limit 10.0 mm, max vM @ult 49.2 MPa (RF 5.61), buckling factor 0.906 x ultimate, f1 19.4 Hz, torsion 185.1 Hz -> fails
+  skin 0.5 mm: mass 1.075 kg, tip w @limit 8.2 mm, max vM @ult 40.4 MPa (RF 6.83), buckling factor 1.401 x ultimate, f1 19.9 Hz, torsion 190.2 Hz -> OK
+  skin 0.6 mm: mass 1.224 kg, tip w @limit 7.0 mm, max vM @ult 34.7 MPa (RF 7.96), buckling factor 2.028 x ultimate, f1 20.2 Hz, torsion 193.8 Hz -> OK
+  skin 0.8 mm: mass 1.521 kg, tip w @limit 5.4 mm, max vM @ult 26.9 MPa (RF 10.25), buckling factor 3.722 x ultimate, f1 20.7 Hz, torsion 198.5 Hz -> OK
+  skin 1.0 mm: mass 1.819 kg, tip w @limit 4.4 mm, max vM @ult 21.9 MPa (RF 12.59), buckling factor 6.050 x ultimate, f1 21.0 Hz, torsion 201.2 Hz -> OK
+  skin 1.2 mm: mass 2.117 kg, tip w @limit 3.7 mm, max vM @ult 18.5 MPa (RF 14.96), buckling factor 9.033 x ultimate, f1 21.3 Hz, torsion 203.1 Hz -> OK
+  skin 1.5 mm: mass 2.563 kg, tip w @limit 3.0 mm, max vM @ult 14.9 MPa (RF 18.54), buckling factor 14.772 x ultimate, f1 21.5 Hz, torsion 204.8 Hz -> OK
+
+lightest aluminium skin meeting yield and buckling at ultimate: 0.5 mm
+
+=== PART D: CFRP laminates (T300/5208, ply 0.125 mm) ===
+  QI [45/-45/0/90]s (1.0 mm): Ex 69.7 GPa, Gxy 26.9 GPa, mass 0.959 kg, tip w @limit 4.7 mm, Tsai-Wu strength ratio @ult 14.20 (skin_lower, 90 deg ply), buckling 5.010 x ult, f1 28.1 Hz, torsion 269.9 Hz -> OK
+  [45/-45/0/0]s (1.0 mm): Ex 104.0 GPa, Gxy 26.9 GPa, mass 0.959 kg, tip w @limit 3.1 mm, Tsai-Wu strength ratio @ult 19.70 (web1, -45 deg ply), buckling 4.114 x ult, f1 34.4 Hz, torsion 272.2 Hz -> OK
+  [45/-45/0]s (0.75 mm): Ex 77.7 GPa, Gxy 33.5 GPa, mass 0.739 kg, tip w @limit 5.4 mm, Tsai-Wu strength ratio @ult 12.50 (skin_lower, 45 deg ply), buckling 2.047 x ult, f1 29.7 Hz, torsion 296.3 Hz -> OK
+
+=== PART E: fatigue of the sized aluminium design (skin 0.5 mm) ===
+  0 -> limit (4 g) manoeuvre cycles, lower-skin spanwise tension: mean 12.2 MPa, amplitude 12.2 MPa, Goodman 12.7 MPa -> life > 1e7 cycles
+  0 -> limit (4 g) manoeuvre cycles, von Mises (project method): mean 13.5 MPa, amplitude 13.5 MPa, Goodman 14.1 MPa -> life > 1e7 cycles
+  1 g +/- 0.5 g gust cycles, lower-skin spanwise tension: mean 6.1 MPa, amplitude 3.0 MPa, Goodman 3.1 MPa -> life > 1e7 cycles
+  1 g +/- 0.5 g gust cycles, von Mises (project method): mean 6.7 MPa, amplitude 3.4 MPa, Goodman 3.4 MPa -> life > 1e7 cycles
+  1 g +/- 1.0 g gust cycles, lower-skin spanwise tension: mean 6.1 MPa, amplitude 6.1 MPa, Goodman 6.2 MPa -> life > 1e7 cycles
+  1 g +/- 1.0 g gust cycles, von Mises (project method): mean 6.7 MPa, amplitude 6.7 MPa, Goodman 6.9 MPa -> life > 1e7 cycles

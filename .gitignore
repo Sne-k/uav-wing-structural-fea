@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Ansys temporary and lock files
+*.lock
+**/_ProjectScratch*/
+*.wbpj.bak
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# local console capture (the same content is saved in validation/results/run_log.txt)
+validation/results_run_console.txt
+
+# local hand-off notes between work sessions
+.handoff/

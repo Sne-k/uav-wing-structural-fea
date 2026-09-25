@@ -1,0 +1,5 @@
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+# only for validation/read_ansys_results.py
+ansys-mapdl-reader>=0.53

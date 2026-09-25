@@ -1,0 +1,94 @@
+{
+  "design": {
+    "mtow_kg": 5.0,
+    "n_limit": 4.0,
+    "safety_factor": 1.5,
+    "cl_max": 1.2,
+    "note": "Inertia relief from the wing's own mass is ignored (conservative).",
+    "n_ult": 6.0,
+    "semi_span_lift_limit_N": 98.10000000000001,
+    "semi_span_lift_ult_N": 147.15,
+    "stall_speed_ms": 11.116778599932145,
+    "manoeuvre_speed_ms": 22.23355719986429
+  },
+  "ansys_original": {
+    "tip_deflection_mm": 7.143,
+    "max_vm_MPa": 154.91,
+    "mass_kg": 12.419,
+    "freqs_Hz": [
+      13.892,
+      23.863,
+      36.981,
+      63.935,
+      68.116,
+      87.749
+    ],
+    "cfrp_freqs_Hz": [
+      18.053,
+      30.997,
+      47.779,
+      83.042,
+      88.201,
+      113.86
+    ]
+  },
+  "beam_theory": {
+    "tip_deflection_mm": 2.86,
+    "root_stress_MPa": 10.2,
+    "f1_Hz": 22.5
+  },
+  "corrected_original": {
+    "tip_w_mm": 2.697969438534099,
+    "max_vm_MPa": 10.665542191638389,
+    "max_vm_far_MPa": 8.325255938782025,
+    "mass_kg": 12.846464905382632,
+    "reaction_z_N": 440.88495257406305,
+    "modes": [
+      {
+        "f": 22.502255123720268,
+        "type": "flapwise bending #1"
+      },
+      {
+        "f": 123.4165637449189,
+        "type": "flapwise bending #2"
+      },
+      {
+        "f": 141.3700319772015,
+        "type": "in-plane (chordwise) bending #1"
+      },
+      {
+        "f": 213.96371455301022,
+        "type": "torsion #1"
+      },
+      {
+        "f": 317.46372921719836,
+        "type": "flapwise bending #3"
+      },
+      {
+        "f": 567.7856778400178,
+        "type": "torsion #2"
+      },
+      {
+        "f": 574.8852447398523,
+        "type": "flapwise bending #4"
+      },
+      {
+        "f": 700.6466816604408,
+        "type": "in-plane (chordwise) bending #2"
+      }
+    ]
+  },
+  "corrected_project_cfrp": {
+    "tip_w_mm": 2.7043579196987406,
+    "max_vm_MPa": 10.585920298328451,
+    "mass_kg": 7.61271994393045,
+    "f1": 29.19704367439195
+  },
+  "design_load_on_original": {
+    "tip_w_mm": 0.8136631736976783,
+    "max_vm_MPa": 3.3598363968634732,
+    "mass_kg": 12.844277685505205
+  },
+  "chosen_aluminium_skin_mm": 0.5,
+  "runtime_min": 72.62870660622914
+}

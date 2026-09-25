@@ -1,0 +1,12 @@
+case,wingfe,reference,error_%
+cantilever plate: tip deflection [m],0.0571106,0.0571463,-0.06
+cantilever plate: 1st bending frequency [Hz],8.22718,8.22518,0.02
+cantilever plate: rigid-body check (max |K r| / max K_ii),7.81182e-16,0,nan
+"in-plane (web) cantilever, 10x1 mesh: tip deflection [m]",0.00573659,0.00575886,-0.39
+"in-plane (web) cantilever, 10x2 mesh: tip deflection [m]",0.00570383,0.00575886,-0.96
+simply supported square plate: buckling Nx_cr [N/m],253903,253067,0.33
+"closed box, torque at tip: twist [rad] vs Bredt-Batho",0.000689269,0.0007125,-3.26
+Scordelis-Lo roof (12x12): midside free-edge deflection,0.302843,0.3024,0.15
+Scordelis-Lo roof (20x20): midside free-edge deflection,0.30224,0.3024,-0.05
+[0]8 laminate strip: tip deflection [m] (E ~ 181 GPa),0.00882826,0.00883978,-0.13
+[90]8 laminate strip: tip deflection [m] (E ~ 10 GPa),0.155202,0.15534,-0.09

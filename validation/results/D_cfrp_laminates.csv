@@ -1,0 +1,4 @@
+skin_layup,Ex_GPa,Gxy_GPa,semi_span_mass_kg,tip_w_limit_mm,tsai_wu_strength_ratio_ult,buckling_factor_vs_ultimate,f1_Hz,f_torsion_Hz,meets_strength_and_buckling
+QI [45/-45/0/90]s (1.0 mm),69.7,26.9,0.959,4.65,14.20,5.010,28.08,269.9,yes
+[45/-45/0/0]s (1.0 mm),104.0,26.9,0.959,3.10,19.70,4.114,34.39,272.2,yes
+[45/-45/0]s (0.75 mm),77.7,33.5,0.739,5.40,12.50,2.047,29.72,296.3,yes

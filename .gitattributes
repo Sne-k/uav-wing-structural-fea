@@ -1,0 +1,17 @@
+# Ansys and CAD files are binary or machine-generated
+*.rst        binary
+*.mechdb     binary
+*.engd       binary
+*.scdocx     binary
+*.wbdp       binary
+*.aapresults binary
+*.DSP        binary
+*.cnd        binary
+*.f3d        binary
+*.png        binary
+*.step       -diff
+ansys/**/ds.dat -diff
+
+# keep GitHub's language statistics about the analysis code
+ansys/** linguist-vendored
+cad/**   linguist-vendored
