@@ -1,0 +1,109 @@
+# encoding: utf-8
+# 2026 R1
+SetScriptVersion(Version="26.1.174")
+system1 = GetSystem(Name="SYS 2")
+model1 = system1.GetContainer(ComponentName="Model")
+model1.Edit()
+model1.SendCommand(
+    Command="""OUT_DIR = r\"C:\\Users\\Deeptanshu\\AppData\\Local\\Temp\\wbresolve_34f418u0\\out\"
+SNIPPET_DIR = r\"D:\\6th sem\\FEA\\uav-wing-structural-fea\\validation\\ansys_rerun\\snippets\"
+SYS_TAG = \"al_static\"
+RESOLVE_ONLY = True
+
+import os, traceback
+log = open(os.path.join(OUT_DIR, \"mech_log_%s.txt\" % SYS_TAG), \"w\")
+vals = open(os.path.join(OUT_DIR, \"values_%s.txt\" % SYS_TAG), \"w\")
+
+def export(obj, name):
+    try:
+        obj.Activate()
+        Graphics.Camera.SetSpecificViewOrientation(ViewOrientationType.Iso)
+        Graphics.Camera.SetFit()
+        s = Ansys.Mechanical.Graphics.GraphicsImageExportSettings()
+        s.Resolution = GraphicsResolutionType.EnhancedResolution
+        s.Background = GraphicsBackgroundType.White
+        s.Width = 1600
+        s.Height = 900
+        s.CurrentGraphicsDisplay = False
+        Graphics.ExportImage(os.path.join(OUT_DIR, \"%s_%s.png\" % (SYS_TAG, name)), GraphicsImageExportFormat.PNG, s)
+        log.write(\"image ok %s\\n\" % name)
+    except Exception:
+        log.write(\"image FAILED %s\\n%s\\n\" % (name, traceback.format_exc()))
+
+def apply_corrections(a, static):
+    for c in a.Children:
+        if c.GetType().Name == \"Pressure\":
+            c.Suppressed = True
+            log.write(\"suppressed %s\\n\" % c.Name)
+    try:
+        a.AnalysisSettings.WeakSprings = WeakSpringsType.Off
+    except Exception:
+        log.write(\"weak springs setting not available\\n\")
+    cs = a.AddCommandSnippet()
+    cs.Name = \"Correction 1 - clamp whole root section\"
+    cs.Input = open(os.path.join(SNIPPET_DIR, \"root_clamp.inp\")).read()
+    if static:
+        cs2 = a.AddCommandSnippet()
+        cs2.Name = \"Correction 2 - design load on upper skin\"
+        cs2.Input = open(os.path.join(SNIPPET_DIR, \"design_load.inp\")).read()
+    else:
+        a.AnalysisSettings.MaximumModesToFind = 12
+        have = set()
+        for r in a.Solution.Children:
+            if r.GetType().Name == \"TotalDeformation\":
+                have.add(int(r.Mode))
+        for m in range(1, 13):
+            if m not in have:
+                r = a.Solution.AddTotalDeformation()
+                r.Mode = m
+
+def solve_with_retry(a):
+    a.Solve(True)
+    if str(a.Solution.Status) != \"Done\":
+        # e.g. MAPDL could not reserve its memory: retry with fewer, shared-memory cores
+        log.write(\"first solve ended in state %s; retrying on 2 cores\\n\" % a.Solution.Status)
+        try:
+            cfg = ExtAPI.Application.SolveConfigurations[\"My Computer\"]
+            cfg.SolveProcessSettings.MaxNumberOfCores = 2
+            cfg.SolveProcessSettings.DistributeSolution = False
+        except Exception:
+            log.write(\"could not change the solve settings\\n%s\\n\" % traceback.format_exc())
+        a.Solve(True)
+    log.write(\"solved, state %s\\n\" % a.Solution.Status)
+
+try:
+    a = ExtAPI.DataModel.Project.Model.Analyses[0]
+    static = str(a.AnalysisType) == \"Static\"
+    if not RESOLVE_ONLY:
+        apply_corrections(a, static)
+    solve_with_retry(a)
+    results = []
+    for r in a.Solution.Children:
+        results.append(r)
+        if r.GetType().Name == \"FatigueTool\":
+            results.extend(list(r.Children))
+    for r in results:
+        tn = r.GetType().Name
+        if tn in (\"SolutionInformation\", \"FatigueTool\"):
+            continue
+        line = \"%s | %s\" % (r.Name, tn)
+        for prop in (\"Maximum\", \"Minimum\", \"ReportedFrequency\"):
+            try:
+                q = getattr(r, prop)
+                line += \" | %s %s %s\" % (prop, q.Value, q.Unit)
+            except Exception:
+                pass
+        try:
+            line += \" | mode %s\" % r.Mode
+        except Exception:
+            pass
+        vals.write(line + \"\\n\")
+        export(r, r.Name.replace(\" \", \"_\"))
+except Exception:
+    log.write(\"FAILED\\n%s\\n\" % traceback.format_exc())
+log.close()
+vals.close()
+""",
+    Language="Python")
+model1.Exit()
+Save(Overwrite=True)

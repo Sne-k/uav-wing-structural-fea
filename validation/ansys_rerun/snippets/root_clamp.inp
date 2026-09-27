@@ -1,0 +1,6 @@
+! Correction 1: clamp the whole root section.
+! Every node in the root plane y = 0 (skin root edge, spar root faces, root cap) is fixed.
+! Units: m (the solver input is written in SI).
+nsel,s,loc,y,-1e-5,1e-5
+d,all,all
+allsel,all

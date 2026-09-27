@@ -7,7 +7,12 @@ most valuable first.
 ## Needs Ansys (Workbench / Mechanical / ACP)
 
 1. **Rebuild the Workbench model with the corrections**, so the submitted
-   screenshots match the verified numbers:
+   screenshots match the verified numbers. The corrected set-up has already
+   been re-solved in Ansys MAPDL on the saved mesh
+   ([validation/ansys_rerun](../validation/ansys_rerun/README.md)). A corrected
+   Workbench project has also been built and solved by script
+   (`validation/ansys_rerun/build_corrected_workbench.py`; images in
+   `results/corrected/`). What is left is the cleaner GUI version:
    * Fixed Support on the skin root edge and both spar root faces, or use
      *Share Topology* in SpaceClaim so the root cap is part of the skin.
    * Pressure *Normal To* the **upper skin only**, not "Components Z" on the

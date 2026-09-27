@@ -1,0 +1,2 @@
+Total Deformation | TotalDeformation | Maximum 0.00081556488751 m | Minimum 0.0 m | ReportedFrequency 1.0 Hz | mode 0
+Equivalent Stress | EquivalentStress | Maximum 5450783.55925 Pa | Minimum 0.0 Pa | ReportedFrequency 1.0 Hz | mode 0
