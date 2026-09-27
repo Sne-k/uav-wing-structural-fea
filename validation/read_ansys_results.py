@@ -6,10 +6,10 @@ along the spars and skin from the root. It also prints the natural frequencies
 of the modal runs. Output goes to validation/results/ansys_rst_readback.txt.
 
 Requires:  pip install ansys-mapdl-reader
-Note: the nodal displacement records of these 2026 R1 files are stored in a
-compressed format that ansys-mapdl-reader does not decode (it returns zeros or
-huge values). Stresses, reactions and frequencies read correctly and match the
-Workbench screenshots exactly.
+Note: ansys-mapdl-reader 0.56 does not read the nodal displacements of these
+2026 R1 files correctly (it returns zeros or values near 1e308); the cause was
+not established. Stresses, reactions and frequencies read correctly and match
+the Workbench screenshots exactly.
 """
 import os
 import re

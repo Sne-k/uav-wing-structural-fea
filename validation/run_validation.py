@@ -9,7 +9,7 @@ Part C  Aluminium skin sizing sweep with linear buckling.
 Part D  CFRP laminates (T300/5208, CLT, Tsai-Wu) versus aluminium.
 Part E  Fatigue at the critical location of the sized aluminium design.
 
-Run:  python validation/run_validation.py        (about 10-15 minutes)
+Run:  python validation/run_validation.py        (about 0.5-1.5 hours on a laptop; 26 and 73 min in our runs)
 Results: validation/results/*.csv, *.json, *.png
 """
 import csv
@@ -161,8 +161,8 @@ def part_a():
         s = stress_summary(r)
         fl = r["freqs"]
         lab = r["mode_labels"]
-        f_tor = next(f for f, l in zip(fl, lab) if l.startswith("torsion"))
-        f_inp = next(f for f, l in zip(fl, lab) if l.startswith("in-plane"))
+        f_tor = next((f for f, l in zip(fl, lab) if l.startswith("torsion")), float("nan"))
+        f_inp = next((f for f, l in zip(fl, lab) if l.startswith("in-plane")), float("nan"))
         rows.append([fct, r["dof"], f"{r['tip_w_mm']:.4f}", f"{s['max_vm_MPa']:.3f}",
                      f"{s['max_vm_far_MPa']:.3f}", f"{fl[0]:.3f}", f"{f_inp:.2f}", f"{f_tor:.2f}",
                      f"{r['mass']:.3f}", f"{r['time_s']:.0f}"])
@@ -206,8 +206,9 @@ def part_b():
     r = solve_case(secs, lambda m: load_upper_skin(m, design_pressure(L)), Mesh().scaled(1.5))
     s = stress_summary(r)
     log(f"  original 8 mm design at ULTIMATE design load ({L:.1f} N/semi-span, applied {r['applied_z']:.1f} N): "
-        f"tip w {r['tip_w_mm']:.3f} mm, max vM {s['max_vm_MPa']:.2f} MPa, "
-        f"reserve factor on yield {AL6061_T6.Sy / 1e6 / s['max_vm_MPa']:.0f}, semi-span mass {r['mass']:.2f} kg "
+        f"tip w {r['tip_w_mm']:.3f} mm, max vM {s['max_vm_MPa']:.2f} MPa, reserve factor on yield at limit "
+        f"{AL6061_T6.Sy / 1e6 / (s['max_vm_MPa'] / DESIGN['safety_factor']):.0f}, on ultimate strength "
+        f"{AL6061_T6.Su / 1e6 / s['max_vm_MPa']:.0f}, semi-span mass {r['mass']:.2f} kg "
         f"({2 * r['mass'] / DESIGN['mtow_kg'] * 100:.0f} % of the 5 kg MTOW for both wings)")
     return ys, sh_llt, ys2, sh_s, r, s
 
@@ -228,17 +229,22 @@ def part_c():
         lab = r["mode_labels"]
         f_tor = next((x for x, l in zip(f, lab) if l.startswith("torsion")), float("nan"))
         tip_lim = r["tip_w_mm"] * L_lim / L_ult
-        rf_yield = AL6061_T6.Sy / 1e6 / s["max_vm_MPa"]
-        ok = lam >= 1.0 and rf_yield >= 1.0
-        rows.append([ts, f"{r['mass']:.3f}", f"{tip_lim:.2f}", f"{s['max_vm_MPa']:.1f}", f"{rf_yield:.2f}",
-                     f"{lam:.3f}", f"{f[0]:.2f}", f"{f_tor:.1f}", "yes" if ok else "no"])
-        log(f"  skin {ts} mm: mass {r['mass']:.3f} kg, tip w @limit {tip_lim:.1f} mm, max vM @ult "
-            f"{s['max_vm_MPa']:.1f} MPa (RF {rf_yield:.2f}), buckling factor {lam:.3f} x ultimate, "
-            f"f1 {f[0]:.1f} Hz, torsion {f_tor:.1f} Hz -> {'OK' if ok else 'fails'}")
+        vm_lim = s["max_vm_MPa"] * L_lim / L_ult
+        rf_yield = AL6061_T6.Sy / 1e6 / vm_lim            # no permanent set at limit load
+        rf_ult = AL6061_T6.Su / 1e6 / s["max_vm_MPa"]     # no failure at ultimate load
+        ok = lam >= 1.0 and rf_yield >= 1.0 and rf_ult >= 1.0
+        rows.append([ts, f"{r['mass']:.3f}", f"{tip_lim:.2f}", f"{vm_lim:.1f}", f"{rf_yield:.2f}",
+                     f"{s['max_vm_MPa']:.1f}", f"{rf_ult:.2f}", f"{lam:.3f}", f"{f[0]:.2f}",
+                     f"{f_tor:.1f}", "yes" if ok else "no"])
+        log(f"  skin {ts} mm: mass {r['mass']:.3f} kg, tip w @limit {tip_lim:.1f} mm, max vM @limit "
+            f"{vm_lim:.1f} MPa (RF yield {rf_yield:.2f}), @ult {s['max_vm_MPa']:.1f} MPa (RF ultimate "
+            f"{rf_ult:.2f}), buckling factor {lam:.3f} x ultimate, f1 {f[0]:.1f} Hz, torsion {f_tor:.1f} Hz "
+            f"-> {'OK' if ok else 'fails'}")
         results[ts] = (r, s)
     write_csv("C_aluminium_sizing.csv", rows,
-              ["skin_mm", "semi_span_mass_kg", "tip_w_limit_mm", "max_vm_ult_MPa", "RF_yield",
-               "buckling_factor_vs_ultimate", "f1_Hz", "f_torsion_Hz", "meets_strength_and_buckling"])
+              ["skin_mm", "semi_span_mass_kg", "tip_w_limit_mm", "max_vm_limit_MPa", "RF_yield_at_limit",
+               "max_vm_ult_MPa", "RF_ultimate_at_ult", "buckling_factor_vs_ultimate", "f1_Hz",
+               "f_torsion_Hz", "meets_strength_and_buckling"])
     return results
 
 
@@ -357,7 +363,8 @@ def plots(conv, ys, sh_llt, ys2, sh_s, al_results, cf_results, chosen):
     w = u[6 * np.array(top) + 2] * 1e3
     fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
     ax[0].plot(y, w, label="wingfe shell model (root clamped)")
-    ax[0].plot([0, SPAN], [0, ANSYS["tip_deflection_mm"]], "r--", label="Ansys tip value 7.14 mm")
+    ax[0].plot([SPAN], [ANSYS["tip_deflection_mm"]], "rv", ms=8,
+               label="Ansys (only the tip value, 7.14 mm, is known)")
     ax[0].set(xlabel="span y [m]", ylabel="deflection w [mm]", title="Deflection along the front spar")
     g, a = s["g"], s["a"]
     for name, mk in (("skin_upper", "min"), ("skin_lower", "max")):
@@ -395,7 +402,9 @@ def plots(conv, ys, sh_llt, ys2, sh_s, al_results, cf_results, chosen):
     fig, ax = plt.subplots(1, 3, figsize=(12, 3.4))
     ax[0].plot(ts, [al_results[t][0]["mass"] for t in ts], "o-", label="aluminium")
     ax[1].plot(ts, [al_results[t][1]["max_vm_MPa"] for t in ts], "o-")
-    ax[1].axhline(AL6061_T6.Sy / 1e6, ls="--", c="r", label="yield 276 MPa")
+    ax[1].axhline(AL6061_T6.Su / 1e6, ls="--", c="r", label="ultimate strength 310 MPa")
+    ax[1].axhline(AL6061_T6.Sy / 1e6 * DESIGN["safety_factor"], ls=":", c="r",
+                  label="yield at limit (276 MPa x 1.5)")
     ax[2].plot(ts, [al_results[t][0]["buckling"][0] for t in ts], "o-")
     ax[2].axhline(1.0, ls="--", c="r", label="buckling at ultimate")
     for name, rr in cf_results.items():
@@ -452,7 +461,8 @@ def main():
     ys, sh_llt, ys2, sh_s, rb, sb = part_b()
     al = part_c()
     ok = [t for t in sorted(al) if al[t][0]["buckling"][0] >= 1.0 and
-          AL6061_T6.Sy / 1e6 / al[t][1]["max_vm_MPa"] >= 1.0]
+          AL6061_T6.Sy / 1e6 / (al[t][1]["max_vm_MPa"] / DESIGN["safety_factor"]) >= 1.0 and
+          AL6061_T6.Su / 1e6 / al[t][1]["max_vm_MPa"] >= 1.0]
     chosen = ok[0] if ok else max(al)
     log(f"\nlightest aluminium skin meeting yield and buckling at ultimate: {chosen} mm")
     cf = part_d()

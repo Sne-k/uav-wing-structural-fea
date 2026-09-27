@@ -29,16 +29,23 @@ V_DIVE_ASSUMED = 40.0   # m/s, assumed design dive speed of a ~20 m/s cruise UAV
 
 
 def section_properties(res):
-    m, info, u = res["model"], res["info"], res["u"]
-    rx = np.zeros(m.ndof)
-    rx[0::6] = 1.0
-    nodal_mass = (m.M @ rx)[0::6]
+    m, info = res["model"], res["info"]
     pitch = SPAN / 11
-    band = np.abs(m.nodes[:, 1] - Y_TS) <= pitch / 2
-    mass_span = nodal_mass[band].sum() / pitch
-    x, z = m.nodes[band, 0], m.nodes[band, 2]
-    xcg = (nodal_mass[band] * x).sum() / nodal_mass[band].sum()
-    zcg = (nodal_mass[band] * z).sum() / nodal_mass[band].sum()
+    lo, hi = Y_TS - pitch / 2, Y_TS + pitch / 2
+    # Element masses and centroids in the rib bay around Y_TS. The bay edges fall on
+    # node rows, so selecting elements by centroid (not nodes by position) avoids a
+    # boundary row being counted twice or not at all.
+    me, ce = [], []
+    for (conn, grp), (dofs, T, data) in zip(m.elements, m.edata):
+        c = m.nodes[conn].mean(axis=0)
+        if lo <= c[1] < hi:
+            me.append(m.sections[grp].rho_t * data["area"])
+            ce.append(c)
+    me, ce = np.array(me), np.array(ce)
+    mass_span = me.sum() / pitch
+    x, z = ce[:, 0], ce[:, 2]
+    xcg = (me * x).sum() / me.sum()
+    zcg = (me * z).sum() / me.sum()
 
     # flexural axis from two unit tip loads (at the leading and trailing edge nodes of the tip)
     tip = info["tip"]
@@ -54,7 +61,7 @@ def section_properties(res):
     x_le, x_te = m.nodes[le, 0], m.nodes[te, 0]
     x_fa_tip = x_le + (x_te - x_le) * twist[0] / (twist[0] - twist[1])
     x_ea = x_fa_tip / chord(SPAN) * chord(Y_TS)          # same chord fraction at the typical section
-    I_ea = (nodal_mass[band] * ((x - x_ea)**2 + (z - zcg)**2)).sum() / pitch
+    I_ea = (me * ((x - x_ea)**2 + (z - zcg)**2)).sum() / pitch
     c = chord(Y_TS)
     b = c / 2
     return dict(b=b, mass_per_span=mass_span, x_cg_frac=xcg / c, x_ea_frac=x_ea / c,
@@ -66,8 +73,12 @@ def run_design(name, sections):
     L = rv.DESIGN["semi_span_lift_ult_N"]
     r = rv.solve_case(sections, lambda m: rv.load_upper_skin(m, rv.design_pressure(L)), Mesh(), modes=8)
     f, lab = r["freqs"], r["mode_labels"]
-    fh = next(x for x, l in zip(f, lab) if l.startswith("flapwise"))
-    fa = next(x for x, l in zip(f, lab) if l.startswith("torsion"))
+    fh = next((x for x, l in zip(f, lab) if l.startswith("flapwise")), None)
+    fa = next((x for x, l in zip(f, lab) if l.startswith("torsion")), None)
+    if fh is None or fa is None:
+        missing = "flapwise bending" if fh is None else "torsion"
+        print(f"{name}: no {missing} mode among the first {len(f)} modes; skipped")
+        return [name] + ["n/a"] * 13
     p = section_properties(r)
     wa = 2 * math.pi * fa
     sigma = fh / fa

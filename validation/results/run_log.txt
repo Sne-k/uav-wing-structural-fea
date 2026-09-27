@@ -26,16 +26,16 @@ project 'CFRP': tip w 2.704 mm, max vM 10.59 MPa, f1 29.20 Hz (ratio 1.298), mas
   stall_speed_ms: 11.117
   manoeuvre_speed_ms: 22.234
   lifting line: AR 10.67, span efficiency e = 0.942, CL_alpha = 5.156 /rad
-  original 8 mm design at ULTIMATE design load (147.2 N/semi-span, applied 147.2 N): tip w 0.814 mm, max vM 3.36 MPa, reserve factor on yield 82, semi-span mass 12.84 kg (514 % of the 5 kg MTOW for both wings)
+  original 8 mm design at ULTIMATE design load (147.2 N/semi-span, applied 147.2 N): tip w 0.814 mm, max vM 3.36 MPa, reserve factor on yield at limit 123, on ultimate strength 92, semi-span mass 12.84 kg (514 % of the 5 kg MTOW for both wings)
 
 === PART C: aluminium skin sizing (webs 1.5 mm, ribs 1.0 mm) ===
-  skin 0.4 mm: mass 0.926 kg, tip w @limit 10.0 mm, max vM @ult 49.2 MPa (RF 5.61), buckling factor 0.906 x ultimate, f1 19.4 Hz, torsion 185.1 Hz -> fails
-  skin 0.5 mm: mass 1.075 kg, tip w @limit 8.2 mm, max vM @ult 40.4 MPa (RF 6.83), buckling factor 1.401 x ultimate, f1 19.9 Hz, torsion 190.2 Hz -> OK
-  skin 0.6 mm: mass 1.224 kg, tip w @limit 7.0 mm, max vM @ult 34.7 MPa (RF 7.96), buckling factor 2.028 x ultimate, f1 20.2 Hz, torsion 193.8 Hz -> OK
-  skin 0.8 mm: mass 1.521 kg, tip w @limit 5.4 mm, max vM @ult 26.9 MPa (RF 10.25), buckling factor 3.722 x ultimate, f1 20.7 Hz, torsion 198.5 Hz -> OK
-  skin 1.0 mm: mass 1.819 kg, tip w @limit 4.4 mm, max vM @ult 21.9 MPa (RF 12.59), buckling factor 6.050 x ultimate, f1 21.0 Hz, torsion 201.2 Hz -> OK
-  skin 1.2 mm: mass 2.117 kg, tip w @limit 3.7 mm, max vM @ult 18.5 MPa (RF 14.96), buckling factor 9.033 x ultimate, f1 21.3 Hz, torsion 203.1 Hz -> OK
-  skin 1.5 mm: mass 2.563 kg, tip w @limit 3.0 mm, max vM @ult 14.9 MPa (RF 18.54), buckling factor 14.772 x ultimate, f1 21.5 Hz, torsion 204.8 Hz -> OK
+  skin 0.4 mm: mass 0.926 kg, tip w @limit 10.0 mm, max vM @limit 32.8 MPa (RF yield 8.42), @ult 49.2 MPa (RF ultimate 6.30), buckling factor 0.906 x ultimate, f1 19.4 Hz, torsion 185.1 Hz -> fails
+  skin 0.5 mm: mass 1.075 kg, tip w @limit 8.2 mm, max vM @limit 26.9 MPa (RF yield 10.24), @ult 40.4 MPa (RF ultimate 7.67), buckling factor 1.401 x ultimate, f1 19.9 Hz, torsion 190.2 Hz -> OK
+  skin 0.6 mm: mass 1.224 kg, tip w @limit 7.0 mm, max vM @limit 23.1 MPa (RF yield 11.94), @ult 34.7 MPa (RF ultimate 8.94), buckling factor 2.028 x ultimate, f1 20.2 Hz, torsion 193.8 Hz -> OK
+  skin 0.8 mm: mass 1.521 kg, tip w @limit 5.4 mm, max vM @limit 17.9 MPa (RF yield 15.38), @ult 26.9 MPa (RF ultimate 11.52), buckling factor 3.722 x ultimate, f1 20.7 Hz, torsion 198.5 Hz -> OK
+  skin 1.0 mm: mass 1.819 kg, tip w @limit 4.4 mm, max vM @limit 14.6 MPa (RF yield 18.88), @ult 21.9 MPa (RF ultimate 14.14), buckling factor 6.050 x ultimate, f1 21.0 Hz, torsion 201.2 Hz -> OK
+  skin 1.2 mm: mass 2.117 kg, tip w @limit 3.7 mm, max vM @limit 12.3 MPa (RF yield 22.43), @ult 18.5 MPa (RF ultimate 16.80), buckling factor 9.033 x ultimate, f1 21.3 Hz, torsion 203.1 Hz -> OK
+  skin 1.5 mm: mass 2.563 kg, tip w @limit 3.0 mm, max vM @limit 9.9 MPa (RF yield 27.82), @ult 14.9 MPa (RF ultimate 20.83), buckling factor 14.772 x ultimate, f1 21.5 Hz, torsion 204.8 Hz -> OK
 
 lightest aluminium skin meeting yield and buckling at ultimate: 0.5 mm
 

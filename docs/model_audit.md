@@ -129,8 +129,8 @@ Participation factors from `solve.out` (aluminium; CFRP scales by 1.299):
 |---|---|---|---|
 | 1 | 13.89 | Z 67 %, ROTX 99 % | 1st **flapwise** bending |
 | 2 | 23.86 | X 72 %, ROTZ 94 % | 1st **in-plane** bending (6 times too low, see 3.1) |
-| 3 | 36.98 | ≈ 0 in all directions | local mode (normalised amplitude 149) |
-| 4 | 63.93 | ≈ 0 | local mode |
+| 3 | 36.98 | ≈ 0 in all directions | local mode at the tip cap (normalised amplitude 149) |
+| 4 | 63.93 | ≈ 0 | local mode next to the root, most likely the unsupported skin edge (the root cap is fully fixed) |
 | 5 | 68.12 | ≈ 0 | local mode at the tip (normalised amplitude 341) |
 | 6 | 87.75 | Z 18 % | 2nd **flapwise** bending (87.75 / 13.89 = 6.3; textbook cantilever 6.27) |
 
@@ -142,7 +142,8 @@ modes are: 22.5 (flap 1), 123.4 (flap 2), 141.4 (in-plane 1), 214.0
 ### 3.5 Sizing is far from a UAV wing (medium)
 
 Under the design ultimate load (6 g on a 5 kg aircraft), the saved design reaches
-only 3.4 MPa (reserve factor 82 on yield) and deflects 0.8 mm. A semi-span weighs
+only 3.4 MPa (reserve factor 92 on ultimate strength, 123 on yield at limit load)
+and deflects 0.8 mm. A semi-span weighs
 12.8 kg, so the two wings weigh about five times the whole aircraft. Part C of
 the re-analysis sizes the skin with strength and buckling checks.
 

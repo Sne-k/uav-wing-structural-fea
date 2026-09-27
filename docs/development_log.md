@@ -45,7 +45,9 @@ this repository. Dates are 2026.
   could not be exported from the UI version in use. Coordinate-based pressure
   functions in Mechanical also failed ("Y is undefined"), so a uniform
   **800 Pa** was used instead.
-* Pivot error on Body45 (a free ROTX DOF): weak springs were switched on.
+* Pivot error on Body45 (the tip cap had a free ROTX DOF). The saved model bonds
+  the tip cap to both spars (contact regions 15–16), which is the likely fix.
+  Weak springs were switched on later, during the thickness iterations.
 * Iterations on shell thickness gave tip deflections of 0.012 → 0.055 → 0.21 mm,
   then an unstable run, then a 11.4 m "rigid-body" result, and finally the saved
   configuration: **8 mm skin, 0.1 mm end caps → 7.14 mm, 154.9 MPa**.

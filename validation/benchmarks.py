@@ -194,10 +194,55 @@ def ply_orientation():
     return out
 
 
+def lifting_line_elliptic():
+    """Elliptic planform: lifting line must give e = 1 and CL_a = a0 / (1 + a0 / (pi AR))."""
+    from wingfe.aero import lifting_line
+    s, c0 = 1.2, 0.25
+    _, _, CLa, e = lifting_line(lambda y: c0 * math.sqrt(max(0.0, 1 - (y / s)**2)), s)
+    AR = (2 * s)**2 / (math.pi * s * c0 / 2)
+    a0 = 2 * math.pi
+    return [("lifting line, elliptic wing: CL_alpha [1/rad]", CLa, a0 / (1 + a0 / (math.pi * AR))),
+            ("lifting line, elliptic wing: span efficiency e", e, 1.0)]
+
+
+def theodorsen_function():
+    """Hankel-function form used in wingfe vs the independent modified-Bessel form K1/(K0+K1)."""
+    from scipy.special import kv
+    from wingfe.flutter import theodorsen
+    rows = []
+    for k in (0.1, 0.5, 1.0):
+        ref = kv(1, 1j * k) / (kv(0, 1j * k) + kv(1, 1j * k))
+        c = theodorsen(k)
+        rows.append((f"Theodorsen C(k = {k}): real part", c.real, ref.real))
+        rows.append((f"Theodorsen C(k = {k}): imaginary part", c.imag, ref.imag))
+    return rows
+
+
+def flutter_trend():
+    """Typical section: the flutter speed must rise as the CG moves forward (mass balancing)."""
+    from wingfe.flutter import flutter_speed
+    speeds = [flutter_speed(20, 0.4, 6 / 25, -0.2, xa)[0] for xa in (0.2, 0.1, 0.0)]
+    return [("typical section, x_a = 0.1: flutter speed U_F/(b w_alpha) (no reference)", speeds[1], 0.0),
+            ("typical section: flutter speed rises as the CG moves forward (1 = yes)",
+             float(speeds[0] < speeds[1] < speeds[2]), 1.0)]
+
+
+def wing_rigid_body():
+    """Assembled project wing: rigid-body motions must produce no forces."""
+    from wingfe.wing import Layout, Mesh, build_wing
+    mat = Isotropic(E=70e9, nu=0.33, rho=2700.0)
+    secs = {"skin": isotropic_section(mat, 0.008), "web": isotropic_section(mat, 0.005),
+            "rib": isotropic_section(mat, 0.002)}
+    m, _ = build_wing(Mesh(), Layout(), secs)
+    m.build(want_mass=False)
+    return [("assembled wing: rigid-body check (max |K r| / max K_ii)", m.rigid_body_check().max(), 0.0)]
+
+
 def main():
     rows = []
     for fn in (cantilever_plate, inplane_beam, lambda: inplane_beam(10, 2), ss_plate_buckling,
-               box_torsion, scordelis_lo, lambda: scordelis_lo(20), ply_orientation):
+               box_torsion, scordelis_lo, lambda: scordelis_lo(20), ply_orientation,
+               lifting_line_elliptic, theodorsen_function, flutter_trend, wing_rigid_body):
         rows += fn()
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "benchmarks.csv"), "w", newline="") as f:

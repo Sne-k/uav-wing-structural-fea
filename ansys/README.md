@@ -18,9 +18,13 @@ Each `MECH` folder keeps what the solver saw and produced:
 * `solve.out`: solver log, including mass, frequencies and participation factors
 * `file.rst`: results
 
-The geometry cell still points to the original absolute path of
-`FEA Proeject (~recovered).step`. The geometry is also cached inside the project,
-so it opens without it. To update the geometry, re-point the cell to
+The project was saved as `complete.wbpj` and renamed here together with its
+`_files` folder. Workbench normally accepts that, but it has **not been tested**,
+because Ansys was not installed when this repository was made. The project file
+also still contains stale absolute paths into the original project folder: the
+geometry file `FEA Proeject (~recovered).step`, and a results file of the earlier
+"unfailed attempt" project. The geometry is cached inside the project
+(`dp0/SYS/DM/SYS.scdocx`). To update the geometry, re-point the geometry cell to
 [`../cad/wing_final.step`](../cad/wing_final.step).
 
 ## Set-up as saved
