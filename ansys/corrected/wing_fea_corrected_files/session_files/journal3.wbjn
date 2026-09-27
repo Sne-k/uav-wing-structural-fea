@@ -1,0 +1,277 @@
+# encoding: utf-8
+# 2026 R1
+SetScriptVersion(Version="26.1.174")
+template1 = GetTemplate(
+    TemplateName="Static Structural",
+    Solver="ANSYS")
+system1 = GetSystem(Name="SYS 1")
+system2 = template1.CreateSystem(
+    Position="Right",
+    RelativeTo=system1)
+system1.Delete()
+engineeringDataComponent1 = system2.GetComponent(Name="Engineering Data")
+system3 = GetSystem(Name="SYS")
+engineeringDataComponent2 = system3.GetComponent(Name="Engineering Data")
+engineeringDataComponent1.ReplaceWithShare(
+    TargetSystem=system2,
+    ComponentToShare=engineeringDataComponent2,
+    SourceSystem=system3)
+geometry1 = system2.GetContainer(ComponentName="Geometry")
+geometry1.SetFile(FilePath="D:/6th sem/FEA/project/FEA Proeject (~recovered).step")
+modelComponent1 = system2.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system2.GetContainer(ComponentName="Model")
+model1.Edit()
+model1.Exit()
+geometry1.SetFile(FilePath="D:/6th sem/FEA/project/FEA Proeject v5.step")
+modelComponent1.Refresh()
+model1.Edit()
+model1.Exit()
+model1.Edit()
+model1.Exit()
+geometry1.SetFile(FilePath="D:/6th sem/FEA/project/FEA Proeject (~recovered).step")
+modelComponent1.Refresh()
+model1.Edit()
+model1.Exit()
+Save(Overwrite=True)
+Save(Overwrite=True)
+template2 = GetTemplate(
+    TemplateName="Modal",
+    Solver="ANSYS")
+system4 = template2.CreateSystem(
+    Position="Right",
+    RelativeTo=system2)
+engineeringDataComponent3 = system4.GetComponent(Name="Engineering Data")
+engineeringDataComponent3.ReplaceWithShare(
+    TargetSystem=system4,
+    ComponentToShare=engineeringDataComponent1,
+    SourceSystem=system2)
+geometryComponent1 = system4.GetComponent(Name="Geometry")
+geometryComponent2 = system2.GetComponent(Name="Geometry")
+geometryComponent1.ReplaceWithShare(
+    TargetSystem=system4,
+    ComponentToShare=geometryComponent2,
+    SourceSystem=system2)
+modelComponent2 = system4.GetComponent(Name="Model")
+modelComponent2.Refresh()
+model2 = system4.GetContainer(ComponentName="Model")
+model2.Edit()
+model2.Exit()
+model2.Edit()
+model1.Edit()
+model1.Exit()
+results1 = system2.GetContainer(ComponentName="Results")
+results1.Edit()
+model1.Exit()
+system2.Copy(KeepConnections=False)
+system5 = GetSystem(Name="SYS 3")
+system5.Delete()
+Save(Overwrite=True)
+system2.Copy(KeepConnections=True)
+model2.Exit()
+system6 = GetSystem(Name="SYS 3")
+engineeringDataComponent4 = system6.GetComponent(Name="Engineering Data")
+engineeringDataComponent4.DeleteShare(System=system6)
+geometryComponent3 = system6.GetComponent(Name="Geometry")
+geometryComponent3.ReplaceWithShare(
+    TargetSystem=system6,
+    ComponentToShare=geometryComponent2,
+    SourceSystem=system2)
+engineeringData1 = system6.GetContainer(ComponentName="Engineering Data")
+material1 = engineeringData1.GetMaterial(Name="Structural Steel")
+material1.Delete()
+matl1 = engineeringData1.CreateMaterial(Name="cpfr")
+matl1.DisplayName = "cfrp"
+favorites1 = EngData.LoadFavoriteItems()
+EngData.EnableFilter(Enable=False)
+EngData.EnableFilter()
+matlProp1 = matl1.CreateProperty(
+    Name="Elasticity",
+    Behavior="Isotropic",
+    Qualifiers={"Definition": "", "Behavior": "Isotropic"})
+matlProp1.BeginBatchUpdate()
+matlProp1.SetVariableProperty(
+    SheetName="Elasticity",
+    SheetQualifiers={"Definition": "", "Behavior": "Isotropic", "Derive from": "Young's Modulus and Poisson's Ratio"},
+    VariableName="Young's Modulus",
+    Property="Unit",
+    Value="GPa")
+matlProp1.EndBatchUpdate()
+matlProp1.SetData(
+    SheetName="Elasticity",
+    SheetQualifiers={"Definition": "", "Behavior": "Isotropic", "Derive from": "Young's Modulus and Poisson's Ratio"},
+    Index=-1,
+    Variables=["Young's Modulus"],
+    Values=[["70 [GPa]"]])
+matlProp1.SetData(
+    SheetName="Elasticity",
+    SheetQualifiers={"Definition": "", "Behavior": "Isotropic", "Derive from": "Young's Modulus and Poisson's Ratio"},
+    Variables=["Poisson's Ratio"],
+    Values=[["0.3"]])
+EngData.EnableFilter(Enable=False)
+EngData.EnableFilter()
+EngData.EnableFilter(Enable=False)
+matlProp2 = matl1.CreateProperty(
+    Name="Density",
+    Qualifiers={"Definition": "", "Behavior": ""})
+matlProp2.SetData(
+    SheetName="Density",
+    SheetQualifiers={"Definition": "", "Behavior": ""},
+    Index=-1,
+    Variables=["Density"],
+    Values=[["1600 [kg m^-3]"]])
+matlProp3 = matl1.CreateProperty(
+    Name="Tensile Yield Strength",
+    Qualifiers={"Definition": "", "Behavior": ""})
+matlProp3.SetVariableProperty(
+    VariableName="Tensile Yield Strength",
+    Property="Unit",
+    Value="MPa")
+matlProp3.SetData(
+    Index=-1,
+    Variables=["Tensile Yield Strength"],
+    Values=[["500 [MPa]"]])
+matlProp4 = matl1.CreateProperty(
+    Name="Tensile Ultimate Strength",
+    Qualifiers={"Definition": "", "Behavior": ""})
+matlProp4.SetVariableProperty(
+    VariableName="Tensile Ultimate Strength",
+    Property="Unit",
+    Value="MPa")
+matlProp4.SetData(
+    Index=-1,
+    Variables=["Tensile Ultimate Strength"],
+    Values=[["600 [MPa]"]])
+modelComponent3 = system6.GetComponent(Name="Model")
+modelComponent3.Refresh()
+model3 = system6.GetContainer(ComponentName="Model")
+model3.Edit()
+model3.Exit()
+system4.Copy(KeepConnections=True)
+system7 = GetSystem(Name="SYS 4")
+model4 = system7.GetContainer(ComponentName="Model")
+model4.Edit()
+engineeringDataComponent5 = system7.GetComponent(Name="Engineering Data")
+engineeringDataComponent5.DeleteShare(System=system7)
+engineeringDataComponent5.ReplaceWithShare(
+    TargetSystem=system7,
+    ComponentToShare=engineeringDataComponent4,
+    SourceSystem=system6)
+model4.Exit()
+modelComponent4 = system7.GetComponent(Name="Model")
+modelComponent4.Refresh()
+model4.Edit()
+model4.Exit()
+Save(Overwrite=True)
+model1.Edit()
+model1.Exit()
+engineeringData2 = system3.GetContainer(ComponentName="Engineering Data")
+material2 = engineeringData2.GetMaterial(Name="Aluminium aAlloy")
+matlProp5 = material2.CreateProperty(
+    Name="S-N Curve",
+    Qualifiers={"Definition": "", "Behavior": ""})
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=-1,
+    Variables=["Cycles"],
+    Values=[["1000"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Variables=["Alternating Stress"],
+    Values=[["300 [Pa]"]])
+matlProp5.BeginBatchUpdate()
+matlProp5.SetVariableProperty(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    VariableName="Alternating Stress",
+    Property="Unit",
+    Value="MPa")
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Variables=["Alternating Stress"],
+    Values=[["0.0003 [MPa]"]])
+matlProp5.EndBatchUpdate()
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Variables=["Alternating Stress"],
+    Values=[["300 [MPa]"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=-1,
+    Variables=["Cycles"],
+    Values=[["10000"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=1,
+    Variables=["Alternating Stress"],
+    Values=[["250 [MPa]"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=-1,
+    Variables=["Cycles"],
+    Values=[["100000"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=2,
+    Variables=["Alternating Stress"],
+    Values=[["180 [MPa]"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=-1,
+    Variables=["Cycles"],
+    Values=[["1000000"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=3,
+    Variables=["Alternating Stress"],
+    Values=[["120 [MPa]"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=-1,
+    Variables=["Cycles"],
+    Values=[["10000000"]])
+matlProp5.SetData(
+    SheetName="S-N Curve",
+    SheetQualifiers={"Definition": "", "Behavior": "", "Interpolation": "Log-Log"},
+    Index=4,
+    Variables=["Alternating Stress"],
+    Values=[["90 [MPa]"]])
+modelComponent1.Refresh()
+model1.Edit()
+model1.Exit()
+matlProp6 = material2.CreateProperty(
+    Name="Tensile Ultimate Strength",
+    Qualifiers={"Definition": "", "Behavior": ""})
+matlProp6.SetVariableProperty(
+    VariableName="Tensile Ultimate Strength",
+    Property="Unit",
+    Value="MPa")
+matlProp6.SetData(
+    Index=-1,
+    Variables=["Tensile Ultimate Strength"],
+    Values=[["310 [MPa]"]])
+modelComponent1.Refresh()
+model1.Edit()
+model4.Edit()
+model1.Exit()
+model4.Exit()
+model3.Edit()
+model3.Exit()
+system3.DisplayText = "dummy"
+system2.DisplayText = "static and fatigue aluminium"
+system4.DisplayText = "Modal aluminum"
+system6.DisplayText = "CFRP statuc"
+system6.DisplayText = "CFRP static"
+system7.DisplayText = "CFRP modal"
+Save(Overwrite=True)

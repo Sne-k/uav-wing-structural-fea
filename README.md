@@ -56,17 +56,21 @@ Screenshots are in [`results/`](results); the model is in [`ansys/`](ansys).
 
 ## Verification: what the numbers really say
 
-The same wing solved three independent ways, with the same 800 Pa load:
+The same wing solved four ways, all with the same 800 Pa load:
 
-| | Ansys model (as saved) | Beam theory, clamped root | Shell FE re-analysis, clamped root (mesh-converged) |
-|---|---|---|---|
-| Tip deflection | 7.14 mm | 2.86 mm | **2.70 mm** |
-| Peak von Mises stress | 154.9 MPa | 10.2 MPa | **10.7 MPa** |
-| 1st bending frequency | 13.9 Hz | 22.5 Hz | **22.5 Hz** |
-| 1st in-plane bending | 23.9 Hz | – | **141 Hz** |
-| 1st torsion | not found | – | **214 Hz** |
+| | Your Ansys deck, as saved | Your Ansys deck, root clamped | Shell FE re-analysis, clamped (mesh-converged) | Beam theory, clamped |
+|---|---|---|---|---|
+| Tip deflection | 7.14 mm | **2.70 mm** | **2.70 mm** | 2.86 mm |
+| Skin stress at the root | peak 154.9 MPa (at the spar root) | **10.6 MPa** | **10.7 MPa** | 10.2 MPa |
+| 1st bending frequency | 13.9 Hz | **22.8 Hz** | **22.5 Hz** | 22.5 Hz |
+| 1st in-plane bending | 23.9 Hz | **141 Hz** | **141 Hz** | – |
+| 1st torsion | not found | **221 Hz** | **214 Hz** | – |
 
-The two independent methods agree; the Ansys model does not. The audit
+Re-solving the saved deck in Ansys MAPDL reproduces 7.14 mm and 154.9 MPa
+exactly. Clamping the root **in that same deck** gives 2.70 mm, the same as
+the independent shell model
+([validation/ansys_rerun](validation/ansys_rerun/README.md)).
+The audit
 ([docs/model_audit.md](docs/model_audit.md)) traces the difference to the set-up,
 not to the software:
 
@@ -82,8 +86,8 @@ not to the software:
    the density changes. Deflection and stress are identical, and every frequency
    rises by exactly √(2700/1600) = 1.299.
 4. **Mode 2** is in-plane (fore-aft) bending. **Modes 3–5** are local
-   vibrations: modes 3 and 5 at the tip cap, mode 4 next to the root, most
-   likely the unsupported skin edge (the root cap itself is fully fixed). No
+   vibrations: modes 3 and 5 at the wing tip, and mode 4 on the front spar
+   between ribs 2 and 3 (the spars are joined to the skin only by contact). No
    torsion mode is found. The fatigue life is computed at the same contact
    hotspot.
 
@@ -93,6 +97,13 @@ not to the software:
   results within 1 % for plate bending, vibration, in-plane bending, plate
   buckling and the Scordelis-Lo roof. Closed-box torsion is within 3.3 %, as
   expected, because the clamped end restrains warping.
+* **Confirmed in Ansys.** Your own decks, re-solved in Ansys MAPDL, reproduce
+  the saved results exactly. With the root clamped they give 2.70 mm,
+  22.8 Hz and 221 Hz torsion. With the design load, they give 0.82 mm and
+  3.5 MPa in the skin
+  ([validation/ansys_rerun](validation/ansys_rerun/README.md)). A corrected
+  copy of the Workbench project, solved the same way, gives new screenshots
+  ([results/corrected](results/corrected/README.md)).
 * **Design load case.** 5 kg MTOW, limit load factor 4, safety factor 1.5.
   Spanwise lift comes from lifting-line theory and is applied to the upper skin
   with the centre of pressure at 25 % chord.
@@ -133,6 +144,7 @@ pip install -r validation/requirements.txt
 python validation/benchmarks.py         # verify the element (~10 s)
 python validation/run_validation.py     # re-analysis, parts A-E (~0.5-1.5 h)
 python validation/run_flutter.py        # flutter / divergence estimate
+python validation/ansys_rerun/rerun_in_mapdl.py   # re-solve the saved decks in Ansys MAPDL (needs Ansys 2026 R1)
 python tools/beam_check.py              # hand calculation
 python tools/inspect_ds_dat.py ansys/wing_fea_files/dp0/SYS-2/MECH/ds.dat
 ```

@@ -1,0 +1,12 @@
+Total Deformation | TotalDeformation | Maximum 0.597023224763 m | Minimum 0.0 m | ReportedFrequency 22.7689219189 Hz | mode 1
+Total Deformation 2 | TotalDeformation | Maximum 148.722015382 m | Minimum 0.0 m | ReportedFrequency 36.9812173165 Hz | mode 2
+Total Deformation 3 | TotalDeformation | Maximum 4.03728423306 m | Minimum 0.0 m | ReportedFrequency 64.0525512263 Hz | mode 3
+Total Deformation 4 | TotalDeformation | Maximum 340.687561658 m | Minimum 0.0 m | ReportedFrequency 68.1158268898 Hz | mode 4
+Total Deformation 6 | TotalDeformation | Maximum 0.618184371649 m | Minimum 0.0 m | ReportedFrequency 123.226290224 Hz | mode 5
+Total Deformation 7 | TotalDeformation | Maximum 0.597291613539 m | Minimum 0.0 m | ReportedFrequency 141.285564152 Hz | mode 6
+Total Deformation 5 | TotalDeformation | Maximum 93.8057708824 m | Minimum 0.0 m | ReportedFrequency 157.738535830 Hz | mode 7
+Total Deformation 8 | TotalDeformation | Maximum 3.87726169073 m | Minimum 0.0 m | ReportedFrequency 176.191096785 Hz | mode 8
+Total Deformation 9 | TotalDeformation | Maximum 156.038391121 m | Minimum 0.0 m | ReportedFrequency 211.108446551 Hz | mode 9
+Total Deformation 10 | TotalDeformation | Maximum 0.723408257875 m | Minimum 0.0 m | ReportedFrequency 221.349513414 Hz | mode 10
+Total Deformation 11 | TotalDeformation | Maximum 161.007629406 m | Minimum 0.0 m | ReportedFrequency 223.161804930 Hz | mode 11
+Total Deformation 12 | TotalDeformation | Maximum 3.93533756143 m | Minimum 0.0 m | ReportedFrequency 266.201667060 Hz | mode 12

@@ -30,22 +30,31 @@ python validation/run_validation.py                                          # i
 | Solver options | linear static, weak springs on; modal: 6 modes |
 | Mass | 12.419 kg (aluminium), 7.359 kg ("CFRP"); the 8 mm skin alone is about 11.95 kg |
 
-## 2. Cross-check: three independent answers
+## 2. Cross-check: four answers
 
-| Quantity | Ansys (as saved) | Beam theory, clamped root | Shell FE re-analysis, clamped root (converged) |
-|---|---|---|---|
-| Tip deflection | **7.14 mm** | 2.86 mm | **2.70 mm** |
-| Peak von Mises | **154.9 MPa** | 10.2 MPa (root bending) | **10.7 MPa** at the web/skin root corner; 8.3 MPa elsewhere |
-| 1st flapwise bending | 13.89 Hz | 22.5 Hz (Rayleigh) | **22.50 Hz** |
-| 1st in-plane (chordwise) bending | 23.86 Hz | – | **141.4 Hz** |
-| 1st torsion | not in the first 6 modes | – | **214.0 Hz** |
-| Total load / reaction | 434.6 N | 441 N | 440.9 N |
-| Mass | 12.42 kg | 11.95 kg (skin only) | 12.85 kg (webs are full depth) |
+| Quantity | Ansys, deck as saved | Ansys, same deck with the root clamped | Shell FE re-analysis, clamped (converged) | Beam theory, clamped |
+|---|---|---|---|---|
+| Tip deflection | **7.14 mm** | **2.70 mm** | **2.70 mm** | 2.86 mm |
+| Peak von Mises | **154.9 MPa** (rear-spar root) | skin **10.6 MPa** at the root; 17.7 MPa local peak inside rib 2 | 10.7 MPa (web/skin root corner) | 10.2 MPa (root bending) |
+| 1st flapwise bending | 13.89 Hz | 22.77 Hz | 22.50 Hz | 22.5 Hz (Rayleigh) |
+| 1st in-plane bending | 23.86 Hz | 141.3 Hz | 141.4 Hz | – |
+| 1st torsion | not in the first 6 modes | 221.4 Hz | 214.0 Hz | – |
+| Load / reaction | 434.6 N | 434.5 N | 440.9 N | 441 N |
+| Mass | 12.42 kg | 12.42 kg | 12.85 kg (full-depth webs) | 11.95 kg (skin only) |
 
-Beam theory and the independent shell model agree with each other to within
-5–6 % on deflection and stress, and to within 0.1 % on frequency. The Ansys
-model is 2.6 times more flexible, its peak stress is 15 times higher, and its
-in-plane bending frequency is 6 times lower. The reasons follow.
+The second column is the student's own Ansys deck re-solved in Ansys MAPDL with
+one change: every node in the root plane is clamped
+([validation/ansys_rerun](../validation/ansys_rerun/README.md)). Re-solving the
+deck unchanged reproduces 7.143 mm and 154.91 MPa exactly.
+
+With the root clamped, Ansys and the independent shell model agree:
+* tip deflection to within 0.0 %;
+* skin root stress to within 1 %;
+* first bending frequency to within 1 %;
+* torsion frequency to within 3.4 %.
+
+**The support definition alone explains the difference.** The next section
+explains why.
 
 ## 3. Known issues, ordered by impact
 
@@ -129,15 +138,16 @@ Participation factors from `solve.out` (aluminium; CFRP scales by 1.299):
 |---|---|---|---|
 | 1 | 13.89 | Z 67 %, ROTX 99 % | 1st **flapwise** bending |
 | 2 | 23.86 | X 72 %, ROTZ 94 % | 1st **in-plane** bending (6 times too low, see 3.1) |
-| 3 | 36.98 | ≈ 0 in all directions | local mode at the tip cap (normalised amplitude 149) |
-| 4 | 63.93 | ≈ 0 | local mode next to the root, most likely the unsupported skin edge (the root cap is fully fixed) |
-| 5 | 68.12 | ≈ 0 | local mode at the tip (normalised amplitude 341) |
+| 3 | 36.98 | ≈ 0 in all directions | local mode at the tip leading edge (normalised amplitude 149) |
+| 4 | 63.93 | ≈ 0 | local vibration of the front spar between ribs 2 and 3 (peak at x = 0.065, y = 0.31 m). Still present with the root clamped (64.1 Hz), because the spars are joined only to the skin, by contact |
+| 5 | 68.12 | ≈ 0 | local mode at the tip trailing edge (normalised amplitude 341) |
 | 6 | 87.75 | Z 18 % | 2nd **flapwise** bending (87.75 / 13.89 = 6.3; textbook cantilever 6.27) |
 
 No torsion mode appears in the first six, so the modal results say nothing about
 bending–torsion coupling or flutter. With the root clamped, the first eight
 modes are: 22.5 (flap 1), 123.4 (flap 2), 141.4 (in-plane 1), 214.0
-(**torsion 1**), 317.5, 567.8, 574.9 and 700.7 Hz.
+(**torsion 1**), 317.5, 567.8, 574.9 and 700.7 Hz. The Ansys deck with the root clamped gives 22.8 (flap 1), 123.2
+(flap 2), 141.3 (in-plane 1) and 221.4 Hz (torsion 1), plus local modes of the tip cap and front spar.
 
 ### 3.5 Sizing is far from a UAV wing (medium)
 

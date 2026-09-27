@@ -1,0 +1,19 @@
+case,mode,f_Hz,type,peak_x_m,peak_y_m,peak_z_m
+M0_as_saved,1,13.892,flapwise bending,0.200,1.200,-0.000
+M0_as_saved,2,23.863,in-plane (chordwise) bending,0.000,1.200,0.001
+M0_as_saved,3,36.981,local / panel,0.000,1.200,0.001
+M0_as_saved,4,63.935,local / panel,0.065,0.310,-0.006
+M0_as_saved,5,68.116,local / panel,0.200,1.200,0.000
+M0_as_saved,6,87.749,flapwise bending,0.200,1.200,-0.000
+M1_root_clamped,1,22.769,flapwise bending,0.200,1.200,-0.000
+M1_root_clamped,2,36.981,local / panel,0.000,1.200,0.001
+M1_root_clamped,3,64.053,local / panel,0.065,0.310,-0.006
+M1_root_clamped,4,68.116,local / panel,0.200,1.200,0.000
+M1_root_clamped,5,123.226,flapwise bending,0.000,1.200,0.001
+M1_root_clamped,6,141.286,in-plane (chordwise) bending,0.000,1.200,0.001
+M1_root_clamped,7,157.738,local / panel,0.105,1.200,0.014
+M1_root_clamped,8,176.191,local / panel,0.067,0.440,-0.006
+M1_root_clamped,9,211.108,local / panel,0.026,1.200,0.013
+M1_root_clamped,10,221.350,torsion,0.200,1.200,-0.000
+M1_root_clamped,11,223.162,local / panel,0.026,1.200,-0.008
+M1_root_clamped,12,266.202,local / panel,0.067,0.315,0.014
