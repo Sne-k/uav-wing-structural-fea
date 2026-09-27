@@ -3,9 +3,11 @@
 Install: UTILITIES > Add-Ins > Scripts and Add-Ins > + (My Scripts) > Create,
 paste this file in, then run it and pick the .dat file (e.g. cad/naca2412.dat).
 
-The coordinates are normalised (chord = 1), so scale the sketch to the chord you
-need afterwards (0.25 m at the root in this project) and close the trailing edge
-with a short line so the profile can be lofted.
+The .dat coordinates are normalised (chord = 1). Fusion's scripting API works in
+centimetres, so unscaled points would give a 1 cm chord (to reach 0.25 m you
+would have to scale by 25, not 0.25). The script therefore scales the points to
+CHORD_M directly. Afterwards, close the trailing edge with a short line so the
+profile can be lofted.
 
 Notes from building this project:
   * A header line or a UTF-8 BOM in the .dat file breaks float parsing. Only
@@ -16,6 +18,9 @@ import traceback
 
 import adsk.core
 import adsk.fusion
+
+CHORD_M = 0.25          # chord of the imported profile [m] (root chord of this project)
+API_UNITS_PER_M = 100.0  # the Fusion API uses centimetres
 
 
 def run(context):
@@ -40,7 +45,8 @@ def run(context):
                     x, y = float(values[0]), float(values[1])
                 except ValueError:
                     continue  # header line such as "NACA 2412"
-                points.add(adsk.core.Point3D.create(x, y, 0))
+                s = CHORD_M * API_UNITS_PER_M
+                points.add(adsk.core.Point3D.create(x * s, y * s, 0))
 
         design = adsk.fusion.Design.cast(app.activeProduct)
         root = design.rootComponent

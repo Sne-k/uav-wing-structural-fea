@@ -21,7 +21,7 @@ def parse(path):
     nodes, bodies, sections = {}, [], []
     elem_nodes = defaultdict(set)
     elem_count = defaultdict(int)
-    surf_elems, fixed, sfe = [], [], {}
+    surf_elems, fixed, sfe, surf_types = [], [], {}, set()
     body_name = elem_type = None
     i = 0
     while i < len(lines):
@@ -36,6 +36,8 @@ def parse(path):
         if m:
             body_name = m.group(1).split("|")[-1]
         m = re.match(r"et,(\d+),(\d+)", line)
+        if m and int(m.group(2)) == 154:
+            surf_types.add(int(m.group(1)))  # SURF154 surface-effect elements carry the pressure
         if m and body_name:
             bodies.append((body_name, int(m.group(1)), int(m.group(2))))
             body_name = None  # later et commands (contact, SURF154) are not bodies
@@ -50,7 +52,7 @@ def parse(path):
                 ids = [int(x) for x in lines[i].split()][1:]
                 elem_count[elem_type] += 1
                 elem_nodes[elem_type].update(n for n in ids if n > 0)
-                if elem_type == 48:
+                if elem_type in surf_types:
                     surf_elems.append(ids)
                 i += 1
         if line.startswith("CMBLOCK,_FIXEDSU"):

@@ -81,21 +81,26 @@ not to the software:
 3. **"CFRP".** Modelled as isotropic with the same modulus as aluminium, so only
    the density changes. Deflection and stress are identical, and every frequency
    rises by exactly √(2700/1600) = 1.299.
-4. **Modes 3–5** are local vibrations of the 0.1 mm end caps, mode 2 is in-plane
-   bending, and no torsion mode is found. The fatigue life is computed at the same
-   contact hotspot.
+4. **Mode 2** is in-plane (fore-aft) bending. **Modes 3–5** are local
+   vibrations: modes 3 and 5 at the tip cap, mode 4 next to the root, most
+   likely the unsupported skin edge (the root cap itself is fully fixed). No
+   torsion mode is found. The fatigue life is computed at the same contact
+   hotspot.
 
 ## Re-analysis and the gaps it fills ([validation/](validation/README.md))
 
-* **Verified solver.** The shell element matches published benchmarks within
-  1 %, including plate buckling, box torsion and the Scordelis-Lo roof.
+* **Verified solver.** The shell element matches closed-form and published
+  results within 1 % for plate bending, vibration, in-plane bending, plate
+  buckling and the Scordelis-Lo roof. Closed-box torsion is within 3.3 %, as
+  expected, because the clamped end restrains warping.
 * **Design load case.** 5 kg MTOW, limit load factor 4, safety factor 1.5.
   Spanwise lift comes from lifting-line theory and is applied to the upper skin
   with the centre of pressure at 25 % chord.
-* **Sizing with buckling.** The original 8 mm skin is 80 times stronger than
-  needed. A **0.5 mm aluminium skin** passes both strength (reserve factor 6.8)
-  and skin buckling (1.4 × ultimate) at **1.08 kg per semi-span instead of
-  12.8 kg**.
+* **Sizing with buckling.** Under the design load the original 8 mm skin has a
+  reserve factor of about 90 on ultimate strength. A **0.5 mm aluminium skin**
+  passes strength (reserve factor 10 on yield at limit load, 7.7 on ultimate
+  strength) and skin buckling (1.4 × ultimate) at **1.08 kg per semi-span
+  instead of 12.8 kg**.
   A 0.4 mm skin buckles below ultimate load, so **buckling, not strength, sizes
   the skin**.
 * **Real composite.** T300/5208 laminates with ply-level Tsai-Wu. A 0.75 mm
@@ -126,7 +131,7 @@ validation/   verified shell FE code (wingfe/), benchmarks, re-analysis scripts 
 ```bash
 pip install -r validation/requirements.txt
 python validation/benchmarks.py         # verify the element (~10 s)
-python validation/run_validation.py     # re-analysis, parts A-E (~20 min)
+python validation/run_validation.py     # re-analysis, parts A-E (~0.5-1.5 h)
 python validation/run_flutter.py        # flutter / divergence estimate
 python tools/beam_check.py              # hand calculation
 python tools/inspect_ds_dat.py ansys/wing_fea_files/dp0/SYS-2/MECH/ds.dat

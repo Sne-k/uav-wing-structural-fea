@@ -54,8 +54,11 @@ the simplification that made the project's CFRP comparison a pure density change
 
 **5. Wing with ribs, spars and winglets (Vinay Kumar et al., 2021).** A CATIA
 wing (15 ribs, I- and C-section spars) with winglets at 25° and 45°. It is
-analysed in Ansys for S2-glass, Kevlar-49 and boron fibre. The boron-fibre /
-45° winglet case gave the lowest deformation and stress.
+analysed in Ansys for S2-glass, Kevlar-49 and boron fibre. Boron fibre gave the
+lowest deformation and stress of the three materials. The winglet angle made
+little difference: in the paper's own table, 25° gives the lowest deformation
+(0.000444 vs 0.000466) and 45° a marginally lower stress (12.236 vs 12.254,
+0.15 % lower).
 *Relevance:* same workflow as paper 4. It also shows how a configuration change
 (winglets) can be studied within the same FE framework.
 

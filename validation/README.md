@@ -9,7 +9,7 @@ the analyses the project promised but did not complete.
 ```bash
 pip install -r validation/requirements.txt
 python validation/benchmarks.py        # element verification            (~10 s)
-python validation/run_validation.py    # parts A-E                       (~20 min)
+python validation/run_validation.py    # parts A-E                       (~0.5-1.5 h)
 python validation/run_flutter.py       # part F, after run_validation    (~2 min)
 python validation/read_ansys_results.py  # read the original Ansys .rst files
 ```
@@ -38,9 +38,14 @@ All outputs land in [`results/`](results).
 | Closed box torsion, clamped end | 6.89 × 10⁻⁴ rad | 7.13 × 10⁻⁴ rad (Bredt-Batho, free warping) | −3.3 % (end restraint) |
 | Scordelis-Lo roof, 20 × 20 (curved-shell benchmark) | 0.3022 | 0.3024 | −0.05 % |
 | [0]₈ / [90]₈ laminate strip, tip deflection | – | CLT D-matrix | −0.13 % / −0.09 % |
-| Lifting line, elliptic wing: C_Lα | 5.3999 /rad | 5.3997 /rad | 0.00 % |
-| Typical-section flutter, Hodges & Pierce example | U_F/(bω_θ) = 2.18 | ≈ 2.17 | ≈ 0.5 % |
-| Rigid-body modes of the assembled wing | ‖K·r‖ / max K_ii ≈ 10⁻⁶ | 0 | – |
+| Lifting line, elliptic wing: C_Lα / span efficiency | 5.3999 /rad / 1.000 | 5.3997 /rad / 1 (closed form) | 0.00 % |
+| Theodorsen function C(k) at k = 0.1, 0.5, 1.0 (Hankel form) | e.g. 0.8319 − 0.1723i | independent modified-Bessel form K₁/(K₀+K₁) | 0.00 % |
+| Typical-section flutter: speed rises as the CG moves forward | yes (U_F/(bω_α) = 2.18 at x_α = 0.1) | expected physical trend | – |
+| Rigid-body motion of the assembled wing | ‖K·r‖ / max K_ii = 9.6 × 10⁻⁷ | 0 | – |
+
+Every row is produced by `benchmarks.py`. The flutter code has no published
+reference case here; it is checked through Theodorsen's function and the
+mass-balance trend.
 
 ## Results
 
@@ -89,28 +94,33 @@ The lift distribution comes from lifting-line theory, with centre of pressure at
 ([B_spanwise_lift_ultimate.csv](results/B_spanwise_lift_ultimate.csv)).
 Inertia relief from the wing's own mass is ignored, which is conservative.
 
-At ultimate load, **the original 8 mm design reaches 3.4 MPa (reserve factor 82
-on yield) and deflects 0.8 mm**. It weighs 12.8 kg per semi-span, so both wings
+At ultimate load, **the original 8 mm design reaches 3.4 MPa and deflects
+0.8 mm**: a reserve factor of 92 on ultimate strength, and 123 on yield at limit
+load. It weighs 12.8 kg per semi-span, so both wings
 together weigh 5.1 times the whole aircraft.
 
 ![spanwise load](results/B_spanwise_load.png)
 
 ### Part C: aluminium skin sizing ([C_aluminium_sizing.csv](results/C_aluminium_sizing.csv))
 
-Al 6061-T6 (Sy 276 MPa); webs 1.5 mm, ribs 1.0 mm. Strength and linear
-buckling are checked at ultimate load; deflection at limit load.
+Al 6061-T6 (Sy 276 MPa, Su 310 MPa); webs 1.5 mm, ribs 1.0 mm. As is usual in
+aircraft design, yield is checked at limit load (no permanent set), and ultimate
+strength and linear buckling at ultimate load (no failure). Deflection is quoted
+at limit load.
 
-| Skin | Semi-span mass | Tip deflection @ limit | Max vM @ ultimate | RF on yield | Buckling factor | f1 | Torsion | OK? |
-|---|---|---|---|---|---|---|---|---|
-| 0.4 mm | 0.93 kg | 10.0 mm | 49.2 MPa | 5.6 | **0.91** | 19.4 Hz | 185 Hz | no (buckles) |
-| **0.5 mm** | **1.08 kg** | 8.2 mm | 40.4 MPa | 6.8 | **1.40** | 19.9 Hz | 190 Hz | **yes** |
-| 0.6 mm | 1.22 kg | 7.0 mm | 34.7 MPa | 8.0 | 2.03 | 20.2 Hz | 194 Hz | yes |
-| 0.8 mm | 1.52 kg | 5.4 mm | 26.9 MPa | 10.3 | 3.72 | 20.7 Hz | 199 Hz | yes |
-| 1.0 mm | 1.82 kg | 4.4 mm | 21.9 MPa | 12.6 | 6.05 | 21.0 Hz | 201 Hz | yes |
-| 1.5 mm | 2.56 kg | 3.0 mm | 14.9 MPa | 18.5 | 14.8 | 21.5 Hz | 205 Hz | yes |
+| Skin | Semi-span mass | Tip deflection @ limit | Max vM @ limit | RF yield @ limit | Max vM @ ultimate | RF ultimate | Buckling factor @ ultimate | f1 | Torsion | OK? |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.4 mm | 0.93 kg | 10.0 mm | 32.8 MPa | 8.4 | 49.2 MPa | 6.3 | **0.91** | 19.4 Hz | 185 Hz | no (buckles) |
+| **0.5 mm** | **1.08 kg** | 8.2 mm | 26.9 MPa | 10.2 | 40.4 MPa | 7.7 | **1.40** | 19.9 Hz | 190 Hz | **yes** |
+| 0.6 mm | 1.22 kg | 7.0 mm | 23.1 MPa | 11.9 | 34.7 MPa | 8.9 | 2.03 | 20.2 Hz | 194 Hz | yes |
+| 0.8 mm | 1.52 kg | 5.4 mm | 17.9 MPa | 15.4 | 26.9 MPa | 11.5 | 3.72 | 20.7 Hz | 199 Hz | yes |
+| 1.0 mm | 1.82 kg | 4.4 mm | 14.6 MPa | 18.9 | 21.9 MPa | 14.1 | 6.05 | 21.0 Hz | 201 Hz | yes |
+| 1.2 mm | 2.12 kg | 3.7 mm | 12.3 MPa | 22.4 | 18.5 MPa | 16.8 | 9.03 | 21.3 Hz | 203 Hz | yes |
+| 1.5 mm | 2.56 kg | 3.0 mm | 9.9 MPa | 27.8 | 14.9 MPa | 20.8 | 14.8 | 21.5 Hz | 205 Hz | yes |
 
 **Skin buckling, not strength, sizes the skin.** Even the 0.4 mm skin has a
-reserve factor of 5.6 on yield, but it buckles below ultimate. The first
+reserve factor of 8.4 on yield at limit load and 6.3 on ultimate strength, but
+it buckles below ultimate. The first
 buckling mode is a local bulge of the upper skin in the root bay.
 
 ![sizing](results/C_aluminium_sizing.png)
@@ -159,9 +169,9 @@ modes.
 
 | Design | f_bend | f_torsion | μ | Flutter speed | Divergence speed | Flutter margin vs assumed 40 m/s dive |
 |---|---|---|---|---|---|---|
-| Original (8 mm Al) | 22.5 Hz | 214 Hz | 233 | 1209 m/s | 1404 m/s | 30 × |
-| Sized Al (0.5 mm) | 19.9 Hz | 190 Hz | 19.4 | 314 m/s | 340 m/s | **7.8 ×** |
-| CFRP QI (1.0 mm) | 28.0 Hz | 270 Hz | 17.4 | 429 m/s | 482 m/s | 10.7 × |
+| Original (8 mm Al) | 22.5 Hz | 214 Hz | 233 | 1204 m/s | 1392 m/s | 30 × |
+| Sized Al (0.5 mm) | 19.9 Hz | 190 Hz | 19.4 | 313 m/s | 337 m/s | **7.8 ×** |
+| CFRP QI (1.0 mm) | 28.0 Hz | 270 Hz | 17.3 | 427 m/s | 478 m/s | 10.7 × |
 
 These speeds are far above any speed this UAV can fly, and above the range where
 incompressible theory is valid. Read them as "no flutter or divergence concern",
