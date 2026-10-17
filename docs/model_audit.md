@@ -50,7 +50,7 @@ deck unchanged reproduces 7.143 mm and 154.91 MPa exactly.
 With the root clamped, Ansys and the independent shell model agree:
 * tip deflection to within 0.0 %;
 * skin root stress to within 1 %;
-* first bending frequency to within 1 %;
+* first bending frequency to within 1.2 %;
 * torsion frequency to within 3.4 %.
 
 **The support definition alone explains the difference.** The next section

@@ -5,8 +5,6 @@
 | `wing_final.f3d` / `wing_final.step` | Geometry used by the final Ansys project. Skin as a surface body (`Wing_body`), root and tip closing faces (`Body44`, `Body45`), 10 solid ribs, 2 solid spars. |
 | `naca2412.dat` | NACA 2412 coordinates in Selig format (generated from the NACA 4-digit equations) for [`tools/fusion_import_airfoil.py`](../tools/fusion_import_airfoil.py). |
 | `archive/v1_solid_wing_2026-04-19.step` | First all-solid model (wing, spars, ribs), used in the failed April solve. |
-| `archive/v2_skin_ribs_spar_2026-04-30.step` | Intermediate: skin surface, ribs, one spar. |
-| `archive/v5_variant_unused_2026-05-09.*` | A variant with extra surface bodies and no spars. It was tried, then reverted. |
 
 ## Geometry
 
