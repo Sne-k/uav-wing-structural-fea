@@ -14,7 +14,7 @@ ten ribs. This was a 6th-semester FEA project in B.Tech Aeronautical Engineering
   sizing with buckling, a real composite layup with Tsai-Wu, fatigue and flutter.
 
 <p align="center">
-  <img src="results/aluminium/static_total_deformation.png" width="48%" alt="Ansys total deformation">
+  <img src="results/corrected/al_static_total_deformation.png" width="48%" alt="Corrected Ansys model: total deformation under the design load">
   <img src="validation/results/A_mode_shapes.png" width="48%" alt="Mode shapes of the corrected model">
 </p>
 
@@ -42,7 +42,7 @@ flowchart LR
   F --> G[Verified re-analysis<br/>validation/]
 ```
 
-## Results of the original Ansys model
+## Original Ansys results (flawed set-up, kept for reference)
 
 | Analysis | Aluminium | "CFRP" |
 |---|---|---|
@@ -52,7 +52,22 @@ flowchart LR
 | Natural frequencies, modes 1–6 | 13.9, 23.9, 37.0, 63.9, 68.1, 87.7 Hz | 18.1, 31.0, 47.8, 83.0, 88.2, 113.9 Hz |
 | Fatigue (zero-based, Goodman) | min. life 3.33 × 10⁶ cycles | – |
 
-Screenshots are in [`results/`](results); the model is in [`ansys/`](ansys).
+These numbers come from the support and load set-up explained below. The
+screenshots are in [`results/original/`](results/original); the model is in [`ansys/`](ansys).
+
+## Corrected Ansys results
+
+The same Workbench project with the root clamped and the design load applied
+(5 kg UAV at 6 g, 147 N per semi-span, on the upper skin). The project is in
+[`ansys/corrected/`](ansys/corrected); the images are in
+[`results/corrected/`](results/corrected/README.md).
+
+| Analysis | Aluminium | "CFRP" (isotropic, as in the project) |
+|---|---|---|
+| Max total deformation | 0.814 mm | 0.816 mm |
+| Max von Mises stress | 5.43 MPa (local peak in rib 2; skin ≈ 3.4 MPa at the root) | 5.45 MPa |
+| Fatigue life | 10⁷ cycles everywhere (no fatigue damage) | – |
+| Main modes | 22.8 Hz bending · 123.2 Hz 2nd bending · 141.3 Hz in-plane · 221.4 Hz torsion | 1.30 × the aluminium values |
 
 ## Verification: what the numbers really say
 
@@ -129,12 +144,12 @@ Full tables and plots are in [validation/README.md](validation/README.md).
 ## Repository layout
 
 ```
-cad/          Fusion 360 and STEP geometry (final and archived versions), NACA 2412 coordinates
-ansys/        final Ansys Workbench project (wing_fea.wbpj + wing_fea_files/)
-results/      screenshots from the original Ansys runs (aluminium, cfrp)
+cad/          Fusion 360 and STEP geometry (final version and the first solid model), NACA 2412 coordinates
+ansys/        original Ansys Workbench project (wing_fea.wbpj) and the corrected copy (corrected/)
+results/      Ansys screenshots: original/ (flawed set-up) and corrected/
 docs/         model audit, literature review, development log, roadmap
 tools/        solver-deck inspector, beam-theory check, Fusion 360 airfoil import script
-validation/   verified shell FE code (wingfe/), benchmarks, re-analysis scripts and results
+validation/   verified shell FE code (wingfe/), benchmarks, re-analysis, and ansys_rerun/ (MAPDL re-run, corrected-project builder)
 ```
 
 ## Reproduce

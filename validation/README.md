@@ -164,7 +164,7 @@ are where fatigue design would focus.
 
 Typical section at 75 % semi-span, with Theodorsen aerodynamics (V-g method).
 Section properties come from the FE model: flexural axis at 46 % chord, centre
-of gravity at 48–49 % chord. Frequencies are the FE first flap and first torsion
+of gravity at 47.6–49.0 % chord. Frequencies are the FE first flap and first torsion
 modes.
 
 | Design | f_bend | f_torsion | μ | Flutter speed | Divergence speed | Flutter margin vs assumed 40 m/s dive |
